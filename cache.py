@@ -1,6 +1,5 @@
 import math
 from random import randint
-from file_handler import FileHandler
 from collections import OrderedDict
 
 
@@ -19,7 +18,7 @@ class CacheConjuntos:
 
 
 class Cache:
-    def __init__(self, filename, politica_escrita: int, tamanho_linha: int, numero_linhas: int, associatividade: int,
+    def __init__(self, politica_escrita: int, tamanho_linha: int, numero_linhas: int, associatividade: int,
                  hit_time: int, politica_substituicao: str):
 
         self.politica_escrita = politica_escrita
@@ -29,9 +28,7 @@ class Cache:
         self.hit_time = hit_time
         self.politica_substituicao = politica_substituicao
         self.num_conjuntos = numero_linhas // associatividade
-        print(f"Num de Conjuntos: {self.num_conjuntos}")
         self.conjuntos = [CacheConjuntos(associatividade) for _ in range(self.num_conjuntos)]
-
         self.TAMANHO_ENDERECO = 32
         self.bits_conjunto = self.bits_conjunto()
         self.bits_palavra = self.bits_palavra()
@@ -71,12 +68,19 @@ class Cache:
         rotulo = (endereco >> (self.bits_palavra + self.bits_conjunto))
         return rotulo
 
+    def politica_escrita_cont(self):
+        # Write-Through
+        if self.politica_escrita == 0:
+            pass
+        # Write-Back
+        else:
+            pass
+
+
     def acessa_endereco(self, endereco):
         int_end = int(endereco, 16)
         index_conjunto = self.encontra_index_conjunto(int_end)
-        print(f"Index Conjunto : {index_conjunto}")
         rotulo = self.encontra_rotulo(int_end)
-        print(f"Rotulo: {rotulo}")
 
         conjunto = self.conjuntos[index_conjunto]
         for i, linha in enumerate(conjunto.linhas):
