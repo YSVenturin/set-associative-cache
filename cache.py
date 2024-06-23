@@ -47,6 +47,8 @@ class Cache:
         self.misses = 0
         self.leituras_mp = 0
         self.escritas_mp = 0
+        self.hits_escrita = 0
+        self.hits_leitura = 0
 
         # Conjunto de Funções
         self.pol_subs_func = {
@@ -179,6 +181,11 @@ class Cache:
                 conjunto.frequencia_ordenada[i] += 1
                 conjunto.frequencia_ordenada.move_to_end(i)
                 self.hits += 1
+
+                if operacao == 'W':
+                    self.hits_escrita += 1
+                else:
+                    self.hits_leitura += 1
 
                 linha.db = self.esc_func(operacao, True, linha)
                 return True  # Hit de Cache
