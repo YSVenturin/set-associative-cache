@@ -29,7 +29,7 @@ if pol_subs == 'A':
     pol_subs = 'Aleatório'
 
 with open(str(input("Digite o nome do arquivo de saída: ")) + '.txt', 'w') as f:
-    f.write("============ PARÂMETROS DE ENTRADA ============\n")
+    f.write("============== PARÂMETROS DE ENTRADA ==============\n")
     f.write(f"Política de Escrita: {pol_esc}\n"
             f"Tamanho da Linha: {tam_lin}\n"
             f"Número de Linhas: {num_lin}\n"
@@ -37,26 +37,26 @@ with open(str(input("Digite o nome do arquivo de saída: ")) + '.txt', 'w') as f
             f"Tempo de Acesso (hit time): {hit_time}\n"
             f"Política de Substituição: {pol_subs}\n"
             f"Tempo de Leitura/Escrita na Memória Principal: {temp_mem_principal}\n"
-            f"===============================================\n\n")
+            f"===================================================\n\n")
 
-    f.write("======== ENDEREÇOS NO ARQUIVO DE ENTRADA ========\n")
+    f.write("========== ENDEREÇOS NO ARQUIVO DE ENTRADA ==========\n")
     f.write(f"Número de Endereços de Escrita: {arq_ent.num_escritas}\n"
             f"Número de Endereços de Leitura: {arq_ent.num_leituras}\n"
             f"Total de Endereços: {arq_ent.total}\n"
-            f"================================================\n\n")
+            f"====================================================\n\n")
 
-    f.write("=== ESCRITAS E LEITURAS NA MEMÓRIA PRINCIPAL ===\n")
+    f.write("===== ESCRITAS E LEITURAS NA MEMÓRIA PRINCIPAL =====\n")
     f.write(f"Total de Escritas: {cache.escritas_mp}\n"
             f"Total de Leituras: {cache.leituras_mp}\n"
             f"Total: {cache.escritas_mp + cache.leituras_mp}\n"
-            f"===============================================\n\n")
+            f"===================================================\n\n")
 
     taxa_de_acerto_global = cache.hits * 100 / arq_ent.total
-    f.write("========== TAXA DE ACERTO (HIT RATE) ==========\n")
+    f.write("============ TAXA DE ACERTO (HIT RATE) ============\n")
     f.write(f"Taxa de Acerto de Leitura: {round(cache.hits_leitura * 100 / arq_ent.num_leituras, 4)}% ({cache.hits_leitura} certos)\n"
             f"Taxa de Acerto de Escrita: {round(cache.hits_escrita * 100 / arq_ent.num_escritas, 4)}% ({cache.hits_escrita} acertos)\n"
             f"Taxa de Acerto Global: {round(taxa_de_acerto_global, 4)}% ({cache.hits} acertos)\n"
-            f"===============================================\n\n")
+            f"===================================================\n\n")
 
     tempo_de_acesso = round((taxa_de_acerto_global/100 * hit_time) + ((1 - taxa_de_acerto_global/100) * (hit_time + temp_mem_principal)), 4)
     f.write(f"Tempo Médio de Acesso da Cache (em ns): {tempo_de_acesso}\n")

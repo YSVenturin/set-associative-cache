@@ -78,7 +78,7 @@ class Cache:
 
     def encontra_index_conjunto(self, endereco: int) -> int:
         """
-        :param endereco:
+        :param endereco: Endereço de memória a ser acessado.
         :return: Retorna em qual conjunto o endereço se encontra.
         """
 
@@ -87,7 +87,7 @@ class Cache:
 
     def encontra_rotulo(self, endereco: int) -> int:
         """
-        :param endereco:
+        :param endereco: Endereço de memória a ser acessado.
 
         :return: Retorna o rótulo do determinado endereço.
         """
@@ -96,6 +96,16 @@ class Cache:
         return rotulo
 
     def esc_write_through(self, operacao: str, hit: bool, _linha: CacheLinha) -> bool:
+        """
+        Política de escrita Write-Through. Com base na operação realizada e se aconteceu um hit de cache, verifica se
+        houve uma leitura/escrita na memória principal.
+
+        :param operacao: 'W' - write ou 'R' - read.
+        :param hit: True - se aconteceu um hit de cache e False - caso contrário.
+        :param _linha: Parâmetro não utilizado nessa função.
+
+        :return: Sempre retorna falso, pois o dirty bit nunca é setado em write-through
+        """
         if operacao == 'W':
             self.escritas_mp += 1
 
@@ -105,7 +115,16 @@ class Cache:
         return False
 
     def esc_write_back(self, operacao: str, hit: bool, linha: CacheLinha) -> bool:
+        """
+        Política de escrita Write-Back. Com base na operação realizada e se aconteceu um hit de cache, verifica se
+        houve uma leitura/escrita na memória principal.
 
+        :param operacao: 'W' - write ou 'R' - read.
+        :param hit: True - se aconteceu um hit de cache e False - caso contrário.
+        :param linha: Linha do conjunto da cache.
+
+        :return: Retorna True/False - setando ou não o dirty bit da linha.
+        """
         if not hit:
             self.leituras_mp += 1
 
@@ -123,6 +142,13 @@ class Cache:
 
     @staticmethod
     def subs_lru(conjunto: CacheConjunto) -> int:
+        """
+        Política de substituição LRU - Least Recently Used.
+        Identifica qual linha do conjunto foi a menos usada recentemente.
+
+        :param conjunto: Conjunto da cache.
+        :return: Inteiro que representa a linha LRU do conjunto.
+        """
         key_to_change = list(conjunto.frequencia_ordenada.keys())[0]
         conjunto.frequencia_ordenada.move_to_end(key_to_change)
 
@@ -130,6 +156,13 @@ class Cache:
 
     @staticmethod
     def subs_lfu(conjunto: CacheConjunto) -> int:
+        """
+        Política de substituição LFU - Least Frequently Used.
+        Identifica qual linha do conjunto possui a menor frequência de acertos de cache.
+
+        :param conjunto: Conjunto da cache.
+        :return: Inteiro que representa a linha LFU do conjunto.
+        """
         key_to_change = None
 
         for i, linha in enumerate(conjunto.linhas):
@@ -147,11 +180,22 @@ class Cache:
         return key_to_change
 
     def subs_aleatorio(self, _conjunto: CacheConjunto) -> int:
+        """"
+        Política de substituição aleatória.
+        Gera um valor aleatório, que identifica a linha que será substituida.
+
+        :return: Retorna um valor aleatório.
+        """
         key_to_change = randint(0, self.associatividade - 1)
 
         return key_to_change
 
     def dirty_lines(self) -> None:
+        """
+        Ao final do programa com política de escrita Write-Back, deve-se chamar essa função para
+        verificar as linhas da memória cache que estão com o dirty bit ligado.
+        Ao encontrar uma dessas linhas, aumenta-se o número de escritas na memória principal e desativa-se o dirty bit.
+        """
         for conjunto in self.conjuntos:
             for linha in conjunto.linhas:
                 if linha.db:

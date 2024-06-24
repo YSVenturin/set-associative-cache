@@ -176,5 +176,6 @@ pyrightconfig.json
 # Memory Addresses
 oficial.cache
 teste.cache
+input.txt
 
 # End of https://www.toptal.com/developers/gitignore/api/python
