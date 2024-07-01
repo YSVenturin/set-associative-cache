@@ -6,31 +6,21 @@ class FileHandler:
         self.num_leituras = 0
         self.total = 0
 
-    def formata_end_operacao(self) -> list:
+    def formata_end_operacao(self) -> None:
         """
         Cria uma lista de operações a partir de um arquivo.
 
         :return: Retorna uma lista contendo todas os endereços e operações.
         """
         with open(self.filename, "r") as arq:
-            for linha in arq.readlines():
+            for i, linha in enumerate(arq.readlines()):
                 self.linhas.append(linha.strip("\n").split(" "))
 
-        self.contador()
+                if self.linhas[i][1] == 'W':
+                    self.num_escritas += 1
+                else:
+                    self.num_leituras += 1
 
-        return self.linhas
-
-    def contador(self) -> None:
-        """
-        Após a formatação dos endereços e operações a serem realizadas, faz a contagem de quantas leituras/escritas
-        acontecerão. Função chamada automaticamente.
-        """
-        for linha in self.linhas:
-            if linha[1] == 'W':
-                self.num_escritas += 1
-            else:
-                self.num_leituras += 1
-
-        self.total = self.num_escritas + self.num_leituras
+            self.total = i + 1
 
         return
